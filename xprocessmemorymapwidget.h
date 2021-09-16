@@ -35,8 +35,12 @@ public:
     explicit XProcessMemoryMapWidget(QWidget *parent = nullptr);
     ~XProcessMemoryMapWidget();
 
+    void setData(void *pHandle);
+    void reload();
+
 private:
     Ui::XProcessMemoryMapWidget *ui;
+    void *g_pHandle;
 };
 
 #endif // XPROCESSMEMORYMAPWIDGET_H

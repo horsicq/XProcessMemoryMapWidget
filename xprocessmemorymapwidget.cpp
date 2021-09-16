@@ -32,3 +32,13 @@ XProcessMemoryMapWidget::~XProcessMemoryMapWidget()
 {
     delete ui;
 }
+
+void XProcessMemoryMapWidget::setData(void *pHandle)
+{
+    g_pHandle=pHandle;
+}
+
+void XProcessMemoryMapWidget::reload()
+{
+    // TODO
+}
