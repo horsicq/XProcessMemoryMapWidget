@@ -22,7 +22,9 @@
 #define XPROCESSMEMORYMAPWIDGET_H
 
 #include <QWidget>
+#include "xprocess.h"
 
+// TODO XShortcuts
 namespace Ui {
 class XProcessMemoryMapWidget;
 }
@@ -32,15 +34,15 @@ class XProcessMemoryMapWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit XProcessMemoryMapWidget(QWidget *parent = nullptr);
+    explicit XProcessMemoryMapWidget(QWidget *pParent=nullptr);
     ~XProcessMemoryMapWidget();
 
-    void setData(void *pHandle);
+    void setData(qint64 nProcessId);
     void reload();
 
 private:
     Ui::XProcessMemoryMapWidget *ui;
-    void *g_pHandle;
+    qint64 g_nProcessId;
 };
 
 #endif // XPROCESSMEMORYMAPWIDGET_H

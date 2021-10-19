@@ -21,11 +21,15 @@
 #include "xprocessmemorymapwidget.h"
 #include "ui_xprocessmemorymapwidget.h"
 
-XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *parent) :
-    QWidget(parent),
+XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *pParent) :
+    QWidget(pParent),
     ui(new Ui::XProcessMemoryMapWidget)
 {
     ui->setupUi(this);
+
+    // mb TODO autorefresh
+
+    g_nProcessId=0;
 }
 
 XProcessMemoryMapWidget::~XProcessMemoryMapWidget()
@@ -33,12 +37,18 @@ XProcessMemoryMapWidget::~XProcessMemoryMapWidget()
     delete ui;
 }
 
-void XProcessMemoryMapWidget::setData(void *pHandle)
+void XProcessMemoryMapWidget::setData(qint64 nProcessId)
 {
-    g_pHandle=pHandle;
+    g_nProcessId=nProcessId;
+
+    reload();
 }
 
 void XProcessMemoryMapWidget::reload()
 {
+#ifdef QT_DEBUG
+    qDebug("void XProcessMemoryMapWidget::reload()");
+#endif
     // TODO
+    // TODO save scrollbar position
 }
