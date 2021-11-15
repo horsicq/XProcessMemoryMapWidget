@@ -49,6 +49,21 @@ void XProcessMemoryMapWidget::reload()
 #ifdef QT_DEBUG
     qDebug("void XProcessMemoryMapWidget::reload()");
 #endif
+
+    qint64 nMemorySize=0;
+
+    if(sizeof(void *)==8)
+    {
+        nMemorySize=0x7FFFFFFFFFFFFFFF;
+    }
+    else
+    {
+        nMemorySize=0x7FFFFFFF;
+    }
+
+    QList<XBinary::MEMORY_REGION> listRegions=XProcess::getMemoryRegionsList(g_nProcessId,0,nMemorySize);
+
+    // TODO get all modules; compare names;
     // TODO
     // TODO save scrollbar position
 }
