@@ -50,20 +50,54 @@ void XProcessMemoryMapWidget::reload()
     qDebug("void XProcessMemoryMapWidget::reload()");
 #endif
 
-    qint64 nMemorySize=0;
-
-    if(sizeof(void *)==8)
+    if(g_nProcessId)
     {
-        nMemorySize=0x7FFFFFFFFFFFFFFF;
-    }
-    else
-    {
-        nMemorySize=0x7FFFFFFF;
-    }
+        qint64 nMemorySize=0;
 
-    QList<XBinary::MEMORY_REGION> listRegions=XProcess::getMemoryRegionsList(g_nProcessId,0,nMemorySize);
+        if(sizeof(void *)==8)
+        {
+            nMemorySize=0x7FFFFFFFFFFFFFFF;
+        }
+        else
+        {
+            nMemorySize=0x7FFFFFFF;
+        }
 
-    // TODO get all modules; compare names;
-    // TODO
-    // TODO save scrollbar position
+        XBinary::MODE modeAddress=XBinary::getWidthModeFromSize(nMemorySize);
+
+        QList<XBinary::MEMORY_REGION> listRegions=XProcess::getMemoryRegionsList(g_nProcessId,0,nMemorySize);
+
+        qint32 nNumberOfRecords=listRegions.count();
+
+        QStandardItemModel *pModel=new QStandardItemModel(nNumberOfRecords,4);
+
+        pModel->setHeaderData(0,Qt::Horizontal,tr("Address"));
+        pModel->setHeaderData(1,Qt::Horizontal,tr("Size"));
+
+        for(int i=0;i<nNumberOfRecords;i++)
+        {
+            QStandardItem *pTypeAddress=new QStandardItem;
+            pTypeAddress->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nAddress));
+            pTypeAddress->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            pModel->setItem(i,0,pTypeAddress);
+
+            QStandardItem *pTypeSize=new QStandardItem;
+//            pTypeSize->setText(XBinary::valueToHex(XBinary::MODE_32,modeAddress,listRegions.at(i).nSize));
+            pTypeSize->setText(XBinary::valueToHex(XBinary::MODE_32,listRegions.at(i).nSize));
+            pTypeSize->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            pModel->setItem(i,1,pTypeSize);
+        }
+
+        ui->tableViewMemoryMap->setModel(pModel);
+
+//        #if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+//            QFuture<void> future=QtConcurrent::run(&SearchStringsWidget::deleteOldModel,this);
+//        #else
+//            QFuture<void> future=QtConcurrent::run(this,&SearchStringsWidget::deleteOldModel);
+//        #endif
+
+        // TODO get all modules; compare names;
+        // TODO
+        // TODO save scrollbar position
+    }
 }

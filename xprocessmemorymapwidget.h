@@ -22,6 +22,7 @@
 #define XPROCESSMEMORYMAPWIDGET_H
 
 #include <QWidget>
+#include <QStandardItemModel>
 #include "xprocess.h"
 
 // TODO XShortcuts
