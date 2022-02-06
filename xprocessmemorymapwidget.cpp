@@ -69,23 +69,29 @@ void XProcessMemoryMapWidget::reload()
 
         qint32 nNumberOfRecords=listRegions.count();
 
-        QStandardItemModel *pModel=new QStandardItemModel(nNumberOfRecords,4);
+        QStandardItemModel *pModel=new QStandardItemModel(nNumberOfRecords,__HEADER_COLUMN_size);
 
-        pModel->setHeaderData(0,Qt::Horizontal,tr("Address"));
-        pModel->setHeaderData(1,Qt::Horizontal,tr("Size"));
+        pModel->setHeaderData(HEADER_COLUMN_ADDRESS,Qt::Horizontal,tr("Address"));
+        pModel->setHeaderData(HEADER_COLUMN_SIZE,Qt::Horizontal,tr("Size"));
+        pModel->setHeaderData(HEADER_COLUMN_FLAGS,Qt::Horizontal,tr("Flags"));
 
         for(int i=0;i<nNumberOfRecords;i++)
         {
             QStandardItem *pTypeAddress=new QStandardItem;
             pTypeAddress->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nAddress));
             pTypeAddress->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            pModel->setItem(i,0,pTypeAddress);
+            pModel->setItem(i,HEADER_COLUMN_ADDRESS,pTypeAddress);
 
             QStandardItem *pTypeSize=new QStandardItem;
 //            pTypeSize->setText(XBinary::valueToHex(XBinary::MODE_32,modeAddress,listRegions.at(i).nSize));
             pTypeSize->setText(XBinary::valueToHex(XBinary::MODE_32,listRegions.at(i).nSize));
             pTypeSize->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            pModel->setItem(i,1,pTypeSize);
+            pModel->setItem(i,HEADER_COLUMN_SIZE,pTypeSize);
+
+            QStandardItem *pTypeFlags=new QStandardItem;
+            // TODO flags to text
+            pTypeFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
+            pModel->setItem(i,HEADER_COLUMN_FLAGS,pTypeFlags);
         }
 
         ui->tableViewMemoryMap->setModel(pModel);

@@ -34,6 +34,14 @@ class XProcessMemoryMapWidget : public QWidget
 {
     Q_OBJECT
 
+    enum HEADER_COLUMN
+    {
+        HEADER_COLUMN_ADDRESS=0,
+        HEADER_COLUMN_SIZE,
+        HEADER_COLUMN_FLAGS,
+        __HEADER_COLUMN_size
+    };
+
 public:
     explicit XProcessMemoryMapWidget(QWidget *pParent=nullptr);
     ~XProcessMemoryMapWidget();
