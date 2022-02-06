@@ -54,6 +54,7 @@ void XProcessMemoryMapWidget::reload()
     {
         quint64 nMemorySize=0;
 
+#ifdef Q_OS_WINDOWS
         if(sizeof(void *)==8)
         {
             nMemorySize=0x7FFFFFFFFFFFFFFF;
@@ -62,6 +63,17 @@ void XProcessMemoryMapWidget::reload()
         {
             nMemorySize=0x7FFFFFFF;
         }
+#endif
+#ifdef Q_OS_LINUX
+        if(sizeof(void *)==8)
+        {
+            nMemorySize=0xFFFFFFFFFFFFFFFF;
+        }
+        else
+        {
+            nMemorySize=0xFFFFFFFF;
+        }
+#endif
 
         XBinary::MODE modeAddress=XBinary::getWidthModeFromSize(nMemorySize);
 
@@ -74,6 +86,10 @@ void XProcessMemoryMapWidget::reload()
         pModel->setHeaderData(HEADER_COLUMN_ADDRESS,Qt::Horizontal,tr("Address"));
         pModel->setHeaderData(HEADER_COLUMN_SIZE,Qt::Horizontal,tr("Size"));
         pModel->setHeaderData(HEADER_COLUMN_FLAGS,Qt::Horizontal,tr("Flags"));
+        pModel->setHeaderData(HEADER_COLUMN_OFFSET,Qt::Horizontal,tr("Offset"));
+        pModel->setHeaderData(HEADER_COLUMN_DEVICE,Qt::Horizontal,tr("Device"));
+        pModel->setHeaderData(HEADER_COLUMN_FILE,Qt::Horizontal,tr("File"));
+        pModel->setHeaderData(HEADER_COLUMN_FILENAME,Qt::Horizontal,tr("File name"));
 
         for(int i=0;i<nNumberOfRecords;i++)
         {
@@ -92,6 +108,28 @@ void XProcessMemoryMapWidget::reload()
             // TODO flags to text
             pTypeFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
             pModel->setItem(i,HEADER_COLUMN_FLAGS,pTypeFlags);
+
+        #ifdef Q_OS_LINUX
+            QStandardItem *pTypeOffset=new QStandardItem;
+            pTypeOffset->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nOffset));
+            pTypeOffset->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            pModel->setItem(i,HEADER_COLUMN_OFFSET,pTypeOffset);
+
+            QStandardItem *pTypeDevice=new QStandardItem;
+            pTypeDevice->setText(listRegions.at(i).sDevice);
+            pTypeDevice->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+            pModel->setItem(i,HEADER_COLUMN_DEVICE,pTypeDevice);
+
+            QStandardItem *pTypeFile=new QStandardItem;
+            pTypeFile->setText(QString::number(listRegions.at(i).nFile));
+            pTypeFile->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            pModel->setItem(i,HEADER_COLUMN_FILE,pTypeFile);
+
+            QStandardItem *pTypeFileName=new QStandardItem;
+            pTypeFileName->setText(listRegions.at(i).sFileName);
+            pTypeFileName->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+            pModel->setItem(i,HEADER_COLUMN_FILENAME,pTypeFileName);
+        #endif
         }
 
         ui->tableViewMemoryMap->setModel(pModel);

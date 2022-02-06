@@ -42,8 +42,8 @@ class XProcessMemoryMapWidget : public QWidget
     #ifdef Q_OS_LINUX
         HEADER_COLUMN_OFFSET,
         HEADER_COLUMN_DEVICE,
-        HEADER_COLUMN_INODE,
-        HEADER_COLUMN_PATHNAME,
+        HEADER_COLUMN_FILE,
+        HEADER_COLUMN_FILENAME,
     #endif
         __HEADER_COLUMN_size
     };
