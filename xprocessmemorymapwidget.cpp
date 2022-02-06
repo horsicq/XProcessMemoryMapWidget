@@ -52,7 +52,7 @@ void XProcessMemoryMapWidget::reload()
 
     if(g_nProcessId)
     {
-        qint64 nMemorySize=0;
+        quint64 nMemorySize=0;
 
         if(sizeof(void *)==8)
         {
