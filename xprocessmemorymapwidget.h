@@ -24,13 +24,13 @@
 #include <QWidget>
 #include <QStandardItemModel>
 #include "xprocess.h"
+#include "xshortcutswidget.h"
 
-// TODO XShortcuts
 namespace Ui {
 class XProcessMemoryMapWidget;
 }
 
-class XProcessMemoryMapWidget : public QWidget
+class XProcessMemoryMapWidget : public XShortcutsWidget
 {
     Q_OBJECT
 
@@ -39,6 +39,12 @@ class XProcessMemoryMapWidget : public QWidget
         HEADER_COLUMN_ADDRESS=0,
         HEADER_COLUMN_SIZE,
         HEADER_COLUMN_FLAGS,
+    #ifdef Q_OS_WINDOWS
+        HEADER_COLUMN_ALLOCATIONBASE,
+        HEADER_COLUMN_ALLOCATIONFLAGS,
+        HEADER_COLUMN_STATE,
+        HEADER_COLUMN_TYPE,
+    #endif
     #ifdef Q_OS_LINUX
         HEADER_COLUMN_OFFSET,
         HEADER_COLUMN_DEVICE,
@@ -54,6 +60,9 @@ public:
 
     void setData(qint64 nProcessId);
     void reload();
+
+protected:
+    virtual void registerShortcuts(bool bState);
 
 private:
     Ui::XProcessMemoryMapWidget *ui;

@@ -22,7 +22,7 @@
 #include "ui_xprocessmemorymapwidget.h"
 
 XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *pParent) :
-    QWidget(pParent),
+    XShortcutsWidget(pParent),
     ui(new Ui::XProcessMemoryMapWidget)
 {
     ui->setupUi(this);
@@ -86,13 +86,22 @@ void XProcessMemoryMapWidget::reload()
         pModel->setHeaderData(HEADER_COLUMN_ADDRESS,Qt::Horizontal,tr("Address"));
         pModel->setHeaderData(HEADER_COLUMN_SIZE,Qt::Horizontal,tr("Size"));
         pModel->setHeaderData(HEADER_COLUMN_FLAGS,Qt::Horizontal,tr("Flags"));
+    #ifdef Q_OS_WINDOWS
+        pModel->setHeaderData(HEADER_COLUMN_ALLOCATIONBASE,Qt::Horizontal,tr("Allocation base"));
+        pModel->setHeaderData(HEADER_COLUMN_ALLOCATIONFLAGS,Qt::Horizontal,tr("Allocation flags"));
+        pModel->setHeaderData(HEADER_COLUMN_STATE,Qt::Horizontal,tr("State"));
+        pModel->setHeaderData(HEADER_COLUMN_TYPE,Qt::Horizontal,tr("Type"));
+    #endif
+    #ifdef Q_OS_LINUX
         pModel->setHeaderData(HEADER_COLUMN_OFFSET,Qt::Horizontal,tr("Offset"));
         pModel->setHeaderData(HEADER_COLUMN_DEVICE,Qt::Horizontal,tr("Device"));
         pModel->setHeaderData(HEADER_COLUMN_FILE,Qt::Horizontal,tr("File"));
         pModel->setHeaderData(HEADER_COLUMN_FILENAME,Qt::Horizontal,tr("File name"));
+    #endif
 
         for(int i=0;i<nNumberOfRecords;i++)
         {
+            // TODO rename pType -> pItem
             QStandardItem *pTypeAddress=new QStandardItem;
             pTypeAddress->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nAddress));
             pTypeAddress->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
@@ -105,10 +114,30 @@ void XProcessMemoryMapWidget::reload()
             pModel->setItem(i,HEADER_COLUMN_SIZE,pTypeSize);
 
             QStandardItem *pTypeFlags=new QStandardItem;
-            // TODO flags to text
+            pTypeFlags->setText(XBinary::memoryFlagsToString(listRegions.at(i).mf));
             pTypeFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
             pModel->setItem(i,HEADER_COLUMN_FLAGS,pTypeFlags);
+        #ifdef Q_OS_WINDOWS
+            QStandardItem *pItemAllocationBase=new QStandardItem;
+            pItemAllocationBase->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nAllocationBase));
+            pItemAllocationBase->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            pModel->setItem(i,HEADER_COLUMN_ALLOCATIONBASE,pItemAllocationBase);
 
+            QStandardItem *pTypeAllocationFlags=new QStandardItem;
+            pTypeAllocationFlags->setText(XBinary::memoryFlagsToString(listRegions.at(i).mfAllocation));
+            pTypeAllocationFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
+            pModel->setItem(i,HEADER_COLUMN_ALLOCATIONFLAGS,pTypeAllocationFlags);
+
+            QStandardItem *pTypeState=new QStandardItem;
+            pTypeState->setText(XBinary::valueToHex(XBinary::MODE_32,listRegions.at(i).nState));
+            pTypeState->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            pModel->setItem(i,HEADER_COLUMN_STATE,pTypeState);
+
+            QStandardItem *pItemType=new QStandardItem;
+            pItemType->setText(XBinary::valueToHex(XBinary::MODE_32,listRegions.at(i).nType));
+            pItemType->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            pModel->setItem(i,HEADER_COLUMN_TYPE,pItemType);
+        #endif
         #ifdef Q_OS_LINUX
             QStandardItem *pTypeOffset=new QStandardItem;
             pTypeOffset->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nOffset));
@@ -144,4 +173,9 @@ void XProcessMemoryMapWidget::reload()
         // TODO
         // TODO save scrollbar position
     }
+}
+
+void XProcessMemoryMapWidget::registerShortcuts(bool bState)
+{
+    Q_UNUSED(bState)
 }
