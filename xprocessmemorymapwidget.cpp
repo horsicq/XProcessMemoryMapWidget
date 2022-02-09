@@ -30,6 +30,8 @@ XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *pParent) :
     // mb TODO autorefresh
 
     g_nProcessId=0;
+    g_pOldModel=nullptr;
+    g_pModel=nullptr;
 }
 
 XProcessMemoryMapWidget::~XProcessMemoryMapWidget()
@@ -52,6 +54,8 @@ void XProcessMemoryMapWidget::reload()
 
     if(g_nProcessId)
     {
+        g_pOldModel=g_pModel;
+
         quint64 nMemorySize=0;
 
 #ifdef Q_OS_WINDOWS
@@ -81,22 +85,22 @@ void XProcessMemoryMapWidget::reload()
 
         qint32 nNumberOfRecords=listRegions.count();
 
-        QStandardItemModel *pModel=new QStandardItemModel(nNumberOfRecords,__HEADER_COLUMN_size);
+        g_pModel=new QStandardItemModel(nNumberOfRecords,__HEADER_COLUMN_size);
 
-        pModel->setHeaderData(HEADER_COLUMN_ADDRESS,Qt::Horizontal,tr("Address"));
-        pModel->setHeaderData(HEADER_COLUMN_SIZE,Qt::Horizontal,tr("Size"));
-        pModel->setHeaderData(HEADER_COLUMN_FLAGS,Qt::Horizontal,tr("Flags"));
+        g_pModel->setHeaderData(HEADER_COLUMN_ADDRESS,Qt::Horizontal,tr("Address"));
+        g_pModel->setHeaderData(HEADER_COLUMN_SIZE,Qt::Horizontal,tr("Size"));
+        g_pModel->setHeaderData(HEADER_COLUMN_FLAGS,Qt::Horizontal,tr("Flags"));
     #ifdef Q_OS_WINDOWS
-        pModel->setHeaderData(HEADER_COLUMN_ALLOCATIONBASE,Qt::Horizontal,tr("Allocation base"));
-        pModel->setHeaderData(HEADER_COLUMN_ALLOCATIONFLAGS,Qt::Horizontal,tr("Allocation flags"));
-        pModel->setHeaderData(HEADER_COLUMN_STATE,Qt::Horizontal,tr("State"));
-        pModel->setHeaderData(HEADER_COLUMN_TYPE,Qt::Horizontal,tr("Type"));
+        g_pModel->setHeaderData(HEADER_COLUMN_ALLOCATIONBASE,Qt::Horizontal,tr("Allocation base"));
+        g_pModel->setHeaderData(HEADER_COLUMN_ALLOCATIONFLAGS,Qt::Horizontal,tr("Allocation flags"));
+        g_pModel->setHeaderData(HEADER_COLUMN_STATE,Qt::Horizontal,tr("State"));
+        g_pModel->setHeaderData(HEADER_COLUMN_TYPE,Qt::Horizontal,tr("Type"));
     #endif
     #ifdef Q_OS_LINUX
-        pModel->setHeaderData(HEADER_COLUMN_OFFSET,Qt::Horizontal,tr("Offset"));
-        pModel->setHeaderData(HEADER_COLUMN_DEVICE,Qt::Horizontal,tr("Device"));
-        pModel->setHeaderData(HEADER_COLUMN_FILE,Qt::Horizontal,tr("File"));
-        pModel->setHeaderData(HEADER_COLUMN_FILENAME,Qt::Horizontal,tr("File name"));
+        g_pModel->setHeaderData(HEADER_COLUMN_OFFSET,Qt::Horizontal,tr("Offset"));
+        g_pModel->setHeaderData(HEADER_COLUMN_DEVICE,Qt::Horizontal,tr("Device"));
+        g_pModel->setHeaderData(HEADER_COLUMN_FILE,Qt::Horizontal,tr("File"));
+        g_pModel->setHeaderData(HEADER_COLUMN_FILENAME,Qt::Horizontal,tr("File name"));
     #endif
 
         for(int i=0;i<nNumberOfRecords;i++)
@@ -105,69 +109,69 @@ void XProcessMemoryMapWidget::reload()
             QStandardItem *pTypeAddress=new QStandardItem;
             pTypeAddress->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nAddress));
             pTypeAddress->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            pModel->setItem(i,HEADER_COLUMN_ADDRESS,pTypeAddress);
+            g_pModel->setItem(i,HEADER_COLUMN_ADDRESS,pTypeAddress);
 
             QStandardItem *pTypeSize=new QStandardItem;
 //            pTypeSize->setText(XBinary::valueToHex(XBinary::MODE_32,modeAddress,listRegions.at(i).nSize));
             pTypeSize->setText(XBinary::valueToHex(XBinary::MODE_32,listRegions.at(i).nSize));
             pTypeSize->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            pModel->setItem(i,HEADER_COLUMN_SIZE,pTypeSize);
+            g_pModel->setItem(i,HEADER_COLUMN_SIZE,pTypeSize);
 
             QStandardItem *pTypeFlags=new QStandardItem;
             pTypeFlags->setText(XBinary::memoryFlagsToString(listRegions.at(i).mf));
             pTypeFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
-            pModel->setItem(i,HEADER_COLUMN_FLAGS,pTypeFlags);
+            g_pModel->setItem(i,HEADER_COLUMN_FLAGS,pTypeFlags);
         #ifdef Q_OS_WINDOWS
             QStandardItem *pItemAllocationBase=new QStandardItem;
             pItemAllocationBase->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nAllocationBase));
             pItemAllocationBase->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            pModel->setItem(i,HEADER_COLUMN_ALLOCATIONBASE,pItemAllocationBase);
+            g_pModel->setItem(i,HEADER_COLUMN_ALLOCATIONBASE,pItemAllocationBase);
 
             QStandardItem *pTypeAllocationFlags=new QStandardItem;
             pTypeAllocationFlags->setText(XBinary::memoryFlagsToString(listRegions.at(i).mfAllocation));
             pTypeAllocationFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
-            pModel->setItem(i,HEADER_COLUMN_ALLOCATIONFLAGS,pTypeAllocationFlags);
+            g_pModel->setItem(i,HEADER_COLUMN_ALLOCATIONFLAGS,pTypeAllocationFlags);
 
             QStandardItem *pTypeState=new QStandardItem;
             pTypeState->setText(XBinary::valueToHex(XBinary::MODE_32,listRegions.at(i).nState));
             pTypeState->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            pModel->setItem(i,HEADER_COLUMN_STATE,pTypeState);
+            g_pModel->setItem(i,HEADER_COLUMN_STATE,pTypeState);
 
             QStandardItem *pItemType=new QStandardItem;
             pItemType->setText(XBinary::valueToHex(XBinary::MODE_32,listRegions.at(i).nType));
             pItemType->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            pModel->setItem(i,HEADER_COLUMN_TYPE,pItemType);
+            g_pModel->setItem(i,HEADER_COLUMN_TYPE,pItemType);
         #endif
         #ifdef Q_OS_LINUX
             QStandardItem *pTypeOffset=new QStandardItem;
             pTypeOffset->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nOffset));
             pTypeOffset->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            pModel->setItem(i,HEADER_COLUMN_OFFSET,pTypeOffset);
+            g_pModel->setItem(i,HEADER_COLUMN_OFFSET,pTypeOffset);
 
             QStandardItem *pTypeDevice=new QStandardItem;
             pTypeDevice->setText(listRegions.at(i).sDevice);
             pTypeDevice->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-            pModel->setItem(i,HEADER_COLUMN_DEVICE,pTypeDevice);
+            g_pModel->setItem(i,HEADER_COLUMN_DEVICE,pTypeDevice);
 
             QStandardItem *pTypeFile=new QStandardItem;
             pTypeFile->setText(QString::number(listRegions.at(i).nFile));
             pTypeFile->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            pModel->setItem(i,HEADER_COLUMN_FILE,pTypeFile);
+            g_pModel->setItem(i,HEADER_COLUMN_FILE,pTypeFile);
 
             QStandardItem *pTypeFileName=new QStandardItem;
             pTypeFileName->setText(listRegions.at(i).sFileName);
             pTypeFileName->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-            pModel->setItem(i,HEADER_COLUMN_FILENAME,pTypeFileName);
+            g_pModel->setItem(i,HEADER_COLUMN_FILENAME,pTypeFileName);
         #endif
         }
 
-        ui->tableViewMemoryMap->setModel(pModel);
+        ui->tableViewMemoryMap->setModel(g_pModel);
 
-//        #if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
-//            QFuture<void> future=QtConcurrent::run(&SearchStringsWidget::deleteOldModel,this);
-//        #else
-//            QFuture<void> future=QtConcurrent::run(this,&SearchStringsWidget::deleteOldModel);
-//        #endif
+        #if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+            QFuture<void> future=QtConcurrent::run(&XProcessMemoryMapWidget::deleteOldModel,this);
+        #else
+            QFuture<void> future=QtConcurrent::run(this,&XProcessMemoryMapWidget::deleteOldModel);
+        #endif
 
         // TODO get all modules; compare names;
         // TODO
@@ -175,7 +179,30 @@ void XProcessMemoryMapWidget::reload()
     }
 }
 
+void XProcessMemoryMapWidget::deleteOldModel()
+{
+    if(g_pOldModel)
+    {
+        delete g_pOldModel;
+
+        g_pOldModel=0;
+    }
+}
+
 void XProcessMemoryMapWidget::registerShortcuts(bool bState)
 {
     Q_UNUSED(bState)
+}
+
+void XProcessMemoryMapWidget::on_pushButtonSave_clicked()
+{
+    if(g_pModel)
+    {
+        XShortcutsWidget::saveModel(g_pModel,QString("%1.txt").arg(tr("Memory map")));
+    }
+}
+
+void XProcessMemoryMapWidget::on_pushButtonReload_clicked()
+{
+    reload();
 }

@@ -1,3 +1,5 @@
+QT       += concurrent
+
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 

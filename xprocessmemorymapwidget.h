@@ -23,6 +23,8 @@
 
 #include <QWidget>
 #include <QStandardItemModel>
+#include <QFuture>
+#include <QtConcurrent>
 #include "xprocess.h"
 #include "xshortcutswidget.h"
 
@@ -61,12 +63,21 @@ public:
     void setData(qint64 nProcessId);
     void reload();
 
+private:
+    void deleteOldModel();
+
 protected:
     virtual void registerShortcuts(bool bState);
+
+private slots:
+    void on_pushButtonSave_clicked();
+    void on_pushButtonReload_clicked();
 
 private:
     Ui::XProcessMemoryMapWidget *ui;
     qint64 g_nProcessId;
+    QStandardItemModel *g_pModel;
+    QStandardItemModel *g_pOldModel;
 };
 
 #endif // XPROCESSMEMORYMAPWIDGET_H
