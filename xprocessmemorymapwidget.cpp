@@ -206,3 +206,8 @@ void XProcessMemoryMapWidget::on_pushButtonReload_clicked()
 {
     reload();
 }
+
+void XProcessMemoryMapWidget::on_tableViewMemoryMap_customContextMenuRequested(const QPoint &pos)
+{
+    // TODO
+}

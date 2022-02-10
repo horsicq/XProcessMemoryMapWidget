@@ -72,6 +72,7 @@ protected:
 private slots:
     void on_pushButtonSave_clicked();
     void on_pushButtonReload_clicked();
+    void on_tableViewMemoryMap_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::XProcessMemoryMapWidget *ui;
