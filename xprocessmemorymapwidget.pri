@@ -4,12 +4,15 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 FORMS += \
+    $$PWD/dialogxprocessmemorymap.ui \
     $$PWD/xprocessmemorymapwidget.ui
 
 HEADERS += \
+    $$PWD/dialogxprocessmemorymap.h \
     $$PWD/xprocessmemorymapwidget.h
 
 SOURCES += \
+    $$PWD/dialogxprocessmemorymap.cpp \
     $$PWD/xprocessmemorymapwidget.cpp
 
 !contains(XCONFIG, xprocess) {
