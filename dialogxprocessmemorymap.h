@@ -32,8 +32,13 @@ class DialogXProcessMemoryMap : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogXProcessMemoryMap(QWidget *parent = nullptr);
+    explicit DialogXProcessMemoryMap(QWidget *pParent=nullptr);
     ~DialogXProcessMemoryMap();
+
+    void setData(qint64 nProcessId);
+
+private slots:
+    void on_pushButtonOK_clicked();
 
 private:
     Ui::DialogXProcessMemoryMap *ui;

@@ -21,8 +21,8 @@
 #include "dialogxprocessmemorymap.h"
 #include "ui_dialogxprocessmemorymap.h"
 
-DialogXProcessMemoryMap::DialogXProcessMemoryMap(QWidget *parent) :
-    QDialog(parent),
+DialogXProcessMemoryMap::DialogXProcessMemoryMap(QWidget *pParent) :
+    QDialog(pParent),
     ui(new Ui::DialogXProcessMemoryMap)
 {
     ui->setupUi(this);
@@ -31,4 +31,18 @@ DialogXProcessMemoryMap::DialogXProcessMemoryMap(QWidget *parent) :
 DialogXProcessMemoryMap::~DialogXProcessMemoryMap()
 {
     delete ui;
+}
+
+void DialogXProcessMemoryMap::setData(qint64 nProcessId)
+{
+    QString sTitle=QString("%1: %2").arg(QString("PID"),QString::number(nProcessId));
+
+    setWindowTitle(sTitle);
+
+    // TODO
+}
+
+void DialogXProcessMemoryMap::on_pushButtonOK_clicked()
+{
+    this->close();
 }
