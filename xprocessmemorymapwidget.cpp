@@ -82,6 +82,7 @@ void XProcessMemoryMapWidget::reload()
         XBinary::MODE modeAddress=XBinary::getWidthModeFromSize(nMemorySize);
 
         QList<XBinary::MEMORY_REGION> listRegions=XProcess::getMemoryRegionsList(g_nProcessId,0,nMemorySize);
+        QList<XProcess::MODULE> listModules=XProcess::getModulesList(g_nProcessId); // TODO
 
         qint32 nNumberOfRecords=listRegions.count();
 
@@ -102,40 +103,40 @@ void XProcessMemoryMapWidget::reload()
         g_pModel->setHeaderData(HEADER_COLUMN_FILE,Qt::Horizontal,tr("File"));
         g_pModel->setHeaderData(HEADER_COLUMN_FILENAME,Qt::Horizontal,tr("File name"));
     #endif
+        g_pModel->setHeaderData(HEADER_COLUMN_REGION,Qt::Horizontal,tr("Region"));
 
         for(int i=0;i<nNumberOfRecords;i++)
         {
-            // TODO rename pType -> pItem
-            QStandardItem *pTypeAddress=new QStandardItem;
-            pTypeAddress->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nAddress));
-            pTypeAddress->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            g_pModel->setItem(i,HEADER_COLUMN_ADDRESS,pTypeAddress);
+            QStandardItem *pItemAddress=new QStandardItem;
+            pItemAddress->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nAddress));
+            pItemAddress->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            g_pModel->setItem(i,HEADER_COLUMN_ADDRESS,pItemAddress);
 
-            QStandardItem *pTypeSize=new QStandardItem;
+            QStandardItem *pItemSize=new QStandardItem;
 //            pTypeSize->setText(XBinary::valueToHex(XBinary::MODE_32,modeAddress,listRegions.at(i).nSize));
-            pTypeSize->setText(XBinary::valueToHex(XBinary::MODE_32,listRegions.at(i).nSize));
-            pTypeSize->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            g_pModel->setItem(i,HEADER_COLUMN_SIZE,pTypeSize);
+            pItemSize->setText(XBinary::valueToHex(XBinary::MODE_32,listRegions.at(i).nSize));
+            pItemSize->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            g_pModel->setItem(i,HEADER_COLUMN_SIZE,pItemSize);
 
-            QStandardItem *pTypeFlags=new QStandardItem;
-            pTypeFlags->setText(XBinary::memoryFlagsToString(listRegions.at(i).mf));
-            pTypeFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
-            g_pModel->setItem(i,HEADER_COLUMN_FLAGS,pTypeFlags);
+            QStandardItem *pItemFlags=new QStandardItem;
+            pItemFlags->setText(XBinary::memoryFlagsToString(listRegions.at(i).mf));
+            pItemFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
+            g_pModel->setItem(i,HEADER_COLUMN_FLAGS,pItemFlags);
         #ifdef Q_OS_WINDOWS
             QStandardItem *pItemAllocationBase=new QStandardItem;
             pItemAllocationBase->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nAllocationBase));
             pItemAllocationBase->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_ALLOCATIONBASE,pItemAllocationBase);
 
-            QStandardItem *pTypeAllocationFlags=new QStandardItem;
-            pTypeAllocationFlags->setText(XBinary::memoryFlagsToString(listRegions.at(i).mfAllocation));
-            pTypeAllocationFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
-            g_pModel->setItem(i,HEADER_COLUMN_ALLOCATIONFLAGS,pTypeAllocationFlags);
+            QStandardItem *pItemAllocationFlags=new QStandardItem;
+            pItemAllocationFlags->setText(XBinary::memoryFlagsToString(listRegions.at(i).mfAllocation));
+            pItemAllocationFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
+            g_pModel->setItem(i,HEADER_COLUMN_ALLOCATIONFLAGS,pItemAllocationFlags);
 
-            QStandardItem *pTypeState=new QStandardItem;
-            pTypeState->setText(XBinary::valueToHex(XBinary::MODE_32,listRegions.at(i).nState));
-            pTypeState->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            g_pModel->setItem(i,HEADER_COLUMN_STATE,pTypeState);
+            QStandardItem *pItemState=new QStandardItem;
+            pItemState->setText(XBinary::valueToHex(XBinary::MODE_32,listRegions.at(i).nState));
+            pItemState->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            g_pModel->setItem(i,HEADER_COLUMN_STATE,pItemState);
 
             QStandardItem *pItemType=new QStandardItem;
             pItemType->setText(XBinary::valueToHex(XBinary::MODE_32,listRegions.at(i).nType));
@@ -143,25 +144,25 @@ void XProcessMemoryMapWidget::reload()
             g_pModel->setItem(i,HEADER_COLUMN_TYPE,pItemType);
         #endif
         #ifdef Q_OS_LINUX
-            QStandardItem *pTypeOffset=new QStandardItem;
-            pTypeOffset->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nOffset));
-            pTypeOffset->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            g_pModel->setItem(i,HEADER_COLUMN_OFFSET,pTypeOffset);
+            QStandardItem *pItemOffset=new QStandardItem;
+            pItemOffset->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nOffset));
+            pItemOffset->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            g_pModel->setItem(i,HEADER_COLUMN_OFFSET,pItemOffset);
 
-            QStandardItem *pTypeDevice=new QStandardItem;
-            pTypeDevice->setText(listRegions.at(i).sDevice);
-            pTypeDevice->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-            g_pModel->setItem(i,HEADER_COLUMN_DEVICE,pTypeDevice);
+            QStandardItem *pItemDevice=new QStandardItem;
+            pItemDevice->setText(listRegions.at(i).sDevice);
+            pItemDevice->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+            g_pModel->setItem(i,HEADER_COLUMN_DEVICE,pItemDevice);
 
-            QStandardItem *pTypeFile=new QStandardItem;
-            pTypeFile->setText(QString::number(listRegions.at(i).nFile));
-            pTypeFile->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            g_pModel->setItem(i,HEADER_COLUMN_FILE,pTypeFile);
+            QStandardItem *pItemFile=new QStandardItem;
+            pItemFile->setText(QString::number(listRegions.at(i).nFile));
+            pItemFile->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            g_pModel->setItem(i,HEADER_COLUMN_FILE,pItemFile);
 
-            QStandardItem *pTypeFileName=new QStandardItem;
-            pTypeFileName->setText(listRegions.at(i).sFileName);
-            pTypeFileName->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-            g_pModel->setItem(i,HEADER_COLUMN_FILENAME,pTypeFileName);
+            QStandardItem *pItemFileName=new QStandardItem;
+            pItemFileName->setText(listRegions.at(i).sFileName);
+            pItemFileName->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+            g_pModel->setItem(i,HEADER_COLUMN_FILENAME,pItemFileName);
         #endif
         }
 

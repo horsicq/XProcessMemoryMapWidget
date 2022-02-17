@@ -53,6 +53,7 @@ class XProcessMemoryMapWidget : public XShortcutsWidget
         HEADER_COLUMN_FILE,
         HEADER_COLUMN_FILENAME,
     #endif
+        HEADER_COLUMN_REGION,
         __HEADER_COLUMN_size
     };
 

@@ -38,7 +38,8 @@ void DialogXProcessMemoryMap::setData(qint64 nProcessId)
     QString sTitle=QString("%1: %2").arg(QString("PID"),QString::number(nProcessId));
 
     setWindowTitle(sTitle);
-    // TODO
+
+    ui->widget->setData(nProcessId);
 }
 
 void DialogXProcessMemoryMap::on_pushButtonOK_clicked()
