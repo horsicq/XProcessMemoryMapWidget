@@ -32,6 +32,8 @@ XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *pParent) :
     g_nProcessId=0;
     g_pOldModel=nullptr;
     g_pModel=nullptr;
+
+    memset(shortCuts,0,sizeof shortCuts);
 }
 
 XProcessMemoryMapWidget::~XProcessMemoryMapWidget()
@@ -82,7 +84,7 @@ void XProcessMemoryMapWidget::reload()
         XBinary::MODE modeAddress=XBinary::getWidthModeFromSize(nMemorySize);
 
         QList<XBinary::MEMORY_REGION> listRegions=XProcess::getMemoryRegionsList(g_nProcessId,0,nMemorySize);
-        QList<XProcess::MODULE> listModules=XProcess::getModulesList(g_nProcessId); // TODO
+        QList<XProcess::MODULE> listModules=XProcess::getModulesList(g_nProcessId);
 
         qint32 nNumberOfRecords=listRegions.count();
 
@@ -101,14 +103,20 @@ void XProcessMemoryMapWidget::reload()
         g_pModel->setHeaderData(HEADER_COLUMN_OFFSET,Qt::Horizontal,tr("Offset"));
         g_pModel->setHeaderData(HEADER_COLUMN_DEVICE,Qt::Horizontal,tr("Device"));
         g_pModel->setHeaderData(HEADER_COLUMN_FILE,Qt::Horizontal,tr("File"));
-        g_pModel->setHeaderData(HEADER_COLUMN_FILENAME,Qt::Horizontal,tr("File name"));
     #endif
+        g_pModel->setHeaderData(HEADER_COLUMN_MODULE,Qt::Horizontal,tr("Module"));
         g_pModel->setHeaderData(HEADER_COLUMN_REGION,Qt::Horizontal,tr("Region"));
+        g_pModel->setHeaderData(HEADER_COLUMN_FILENAME,Qt::Horizontal,tr("File name"));
+
+        quint64 nCurrentBase=-1;
+        XBinary::_MEMORY_MAP memoryMap={};
 
         for(int i=0;i<nNumberOfRecords;i++)
         {
             QStandardItem *pItemAddress=new QStandardItem;
             pItemAddress->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nAddress));
+            pItemAddress->setData(listRegions.at(i).nAddress,Qt::UserRole+USERROLE_ADDRESS);
+            pItemAddress->setData(listRegions.at(i).nSize,Qt::UserRole+USERROLE_SIZE);
             pItemAddress->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_ADDRESS,pItemAddress);
 
@@ -158,12 +166,35 @@ void XProcessMemoryMapWidget::reload()
             pItemFile->setText(QString::number(listRegions.at(i).nFile));
             pItemFile->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_FILE,pItemFile);
-
-            QStandardItem *pItemFileName=new QStandardItem;
-            pItemFileName->setText(listRegions.at(i).sFileName);
-            pItemFileName->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-            g_pModel->setItem(i,HEADER_COLUMN_FILENAME,pItemFileName);
         #endif
+
+            XProcess::MODULE module=XProcess::getModuleByAddress(listRegions.at(i).nAddress,&listModules);
+
+            if((module.nSize)&&(module.sFileName!=""))
+            {
+                if(nCurrentBase!=module.nAddress)
+                {
+                    nCurrentBase=module.nAddress;
+                    memoryMap=XFormats::getMemoryMap(module.sFileName,0,module.nAddress);
+                }
+
+                XBinary::_MEMORY_RECORD memoryRecord=XBinary::getMemoryRecordByAddress(&memoryMap,listRegions.at(i).nAddress);
+
+                QStandardItem *pItemModule=new QStandardItem;
+                pItemModule->setText(module.sName);
+                pItemModule->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+                g_pModel->setItem(i,HEADER_COLUMN_MODULE,pItemModule);
+
+                QStandardItem *pItemRegion=new QStandardItem;
+                pItemRegion->setText(memoryRecord.sName);
+                pItemRegion->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+                g_pModel->setItem(i,HEADER_COLUMN_REGION,pItemRegion);
+
+                QStandardItem *pItemFileName=new QStandardItem;
+                pItemFileName->setText(module.sFileName);
+                pItemFileName->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+                g_pModel->setItem(i,HEADER_COLUMN_FILENAME,pItemFileName);
+            }
         }
 
         ui->tableViewMemoryMap->setModel(g_pModel);
@@ -192,7 +223,21 @@ void XProcessMemoryMapWidget::deleteOldModel()
 
 void XProcessMemoryMapWidget::registerShortcuts(bool bState)
 {
-    Q_UNUSED(bState)
+    if(bState)
+    {
+        if(!shortCuts[SC_DUMPTOFILE])               shortCuts[SC_DUMPTOFILE]                =new QShortcut(getShortcuts()->getShortcut(XShortcuts::ID_MEMORYMAP_DUMPTOFILE),            this,SLOT(_dumpToFileSlot()));
+    }
+    else
+    {
+        for(qint32 i=0;i<__SC_SIZE;i++)
+        {
+            if(shortCuts[i])
+            {
+                delete shortCuts[i];
+                shortCuts[i]=nullptr;
+            }
+        }
+    }
 }
 
 void XProcessMemoryMapWidget::on_pushButtonSave_clicked()
@@ -210,5 +255,43 @@ void XProcessMemoryMapWidget::on_pushButtonReload_clicked()
 
 void XProcessMemoryMapWidget::on_tableViewMemoryMap_customContextMenuRequested(const QPoint &pos)
 {
-    // TODO
+    QMenu contextMenu(this);
+
+    QAction actionDumpToFile(tr("Dump to file"),this);
+    actionDumpToFile.setShortcut(getShortcuts()->getShortcut(XShortcuts::ID_MEMORYMAP_DUMPTOFILE));
+    connect(&actionDumpToFile,SIGNAL(triggered()),this,SLOT(_dumpToFileSlot()));
+
+    contextMenu.addAction(&actionDumpToFile);
+
+    contextMenu.exec(ui->tableViewMemoryMap->viewport()->mapToGlobal(pos));
+}
+
+void XProcessMemoryMapWidget::_dumpToFileSlot()
+{
+    QString sSaveFileName=QString("%1.bin").arg(tr("Dump"));
+    QString sFileName=QFileDialog::getSaveFileName(this,tr("Save dump"),sSaveFileName,QString("%1 (*.bin)").arg(tr("Raw data")));
+
+    if(!sFileName.isEmpty())
+    {
+        qint32 nRow=ui->tableViewMemoryMap->currentIndex().row();
+
+        if((nRow!=-1)&&(g_pModel))
+        {
+            QModelIndex index=ui->tableViewMemoryMap->selectionModel()->selectedIndexes().at(0);
+
+            quint64 nAddress=ui->tableViewMemoryMap->model()->data(index,Qt::UserRole+USERROLE_ADDRESS).toString().toULongLong(0,16);
+            quint64 nSize=ui->tableViewMemoryMap->model()->data(index,Qt::UserRole+USERROLE_SIZE).toString().toULongLong(0,16);
+
+            XProcessDevice pd;
+
+            if(pd.openPID(g_nProcessId,nAddress,nSize,QIODevice::ReadOnly))
+            {
+                DialogDumpProcess dd(this,&pd,0,nSize,sFileName,DumpProcess::DT_OFFSET);
+
+                dd.exec();
+
+                pd.close();
+            }
+        }
+    }
 }

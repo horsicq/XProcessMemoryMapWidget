@@ -21,12 +21,16 @@
 #ifndef XPROCESSMEMORYMAPWIDGET_H
 #define XPROCESSMEMORYMAPWIDGET_H
 
+#include <QMenu>
 #include <QWidget>
 #include <QStandardItemModel>
 #include <QFuture>
 #include <QtConcurrent>
+#include "dialogdumpprocess.h"
 #include "xprocess.h"
+#include "xprocessdevice.h"
 #include "xshortcutswidget.h"
+#include "xformats.h"
 
 namespace Ui {
 class XProcessMemoryMapWidget;
@@ -51,10 +55,23 @@ class XProcessMemoryMapWidget : public XShortcutsWidget
         HEADER_COLUMN_OFFSET,
         HEADER_COLUMN_DEVICE,
         HEADER_COLUMN_FILE,
-        HEADER_COLUMN_FILENAME,
     #endif
+        HEADER_COLUMN_MODULE,
         HEADER_COLUMN_REGION,
+        HEADER_COLUMN_FILENAME,
         __HEADER_COLUMN_size
+    };
+
+    enum SC
+    {
+        SC_DUMPTOFILE=0,
+        __SC_SIZE
+    };
+
+    enum USERROLE
+    {
+        USERROLE_SIZE=0,
+        USERROLE_ADDRESS
     };
 
 public:
@@ -75,11 +92,15 @@ private slots:
     void on_pushButtonReload_clicked();
     void on_tableViewMemoryMap_customContextMenuRequested(const QPoint &pos);
 
+protected slots:
+    void _dumpToFileSlot();
+
 private:
     Ui::XProcessMemoryMapWidget *ui;
     qint64 g_nProcessId;
     QStandardItemModel *g_pModel;
     QStandardItemModel *g_pOldModel;
+    QShortcut *shortCuts[__SC_SIZE];
 };
 
 #endif // XPROCESSMEMORYMAPWIDGET_H
