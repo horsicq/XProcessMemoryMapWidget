@@ -28,7 +28,6 @@
 #include <QtConcurrent>
 #include "dialogdumpprocess.h"
 #include "xprocess.h"
-#include "xprocessdevice.h"
 #include "xshortcutswidget.h"
 #include "xformats.h"
 

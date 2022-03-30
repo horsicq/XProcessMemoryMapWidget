@@ -282,9 +282,9 @@ void XProcessMemoryMapWidget::_dumpToFileSlot()
             quint64 nAddress=ui->tableViewMemoryMap->model()->data(index,Qt::UserRole+USERROLE_ADDRESS).toString().toULongLong(0,16);
             quint64 nSize=ui->tableViewMemoryMap->model()->data(index,Qt::UserRole+USERROLE_SIZE).toString().toULongLong(0,16);
 
-            XProcessDevice pd;
+            XProcess pd(g_nProcessId,nAddress,nSize);
 
-            if(pd.openPID(g_nProcessId,nAddress,nSize,QIODevice::ReadOnly))
+            if(pd.open(QIODevice::ReadOnly))
             {
                 DialogDumpProcess dd(this,&pd,0,nSize,sFileName,DumpProcess::DT_OFFSET);
 
