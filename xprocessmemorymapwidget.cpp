@@ -84,7 +84,7 @@ void XProcessMemoryMapWidget::reload()
         XBinary::MODE modeAddress=XBinary::getWidthModeFromSize(nMemorySize);
 
         QList<XBinary::MEMORY_REGION> listRegions=XProcess::getMemoryRegionsList(g_nProcessId,0,nMemorySize);
-        QList<XProcess::MODULE> listModules=XProcess::getModulesList(g_nProcessId);
+        QList<XBinary::MODULE> listModules=XProcess::getModulesList(g_nProcessId);
 
         qint32 nNumberOfRecords=listRegions.count();
 
@@ -168,7 +168,7 @@ void XProcessMemoryMapWidget::reload()
             g_pModel->setItem(i,HEADER_COLUMN_FILE,pItemFile);
         #endif
 
-            XProcess::MODULE module=XProcess::getModuleByAddress(listRegions.at(i).nAddress,&listModules);
+            XBinary::MODULE module=XProcess::getModuleByAddress(listRegions.at(i).nAddress,&listModules);
 
             if((module.nSize)&&(module.sFileName!=""))
             {
