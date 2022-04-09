@@ -77,7 +77,7 @@ public:
     explicit XProcessMemoryMapWidget(QWidget *pParent=nullptr);
     ~XProcessMemoryMapWidget();
 
-    void setData(qint64 nProcessId);
+    void setData(qint64 nProcessId,bool bReload=true);
     void reload();
 
 private:

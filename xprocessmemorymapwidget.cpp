@@ -41,11 +41,14 @@ XProcessMemoryMapWidget::~XProcessMemoryMapWidget()
     delete ui;
 }
 
-void XProcessMemoryMapWidget::setData(qint64 nProcessId)
+void XProcessMemoryMapWidget::setData(qint64 nProcessId,bool bReload)
 {
     g_nProcessId=nProcessId;
 
-    reload();
+    if(bReload)
+    {
+        reload();
+    }
 }
 
 void XProcessMemoryMapWidget::reload()
