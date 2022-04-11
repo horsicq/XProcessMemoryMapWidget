@@ -30,6 +30,7 @@
 #include "xprocess.h"
 #include "xshortcutswidget.h"
 #include "xformats.h"
+#include "xinfodb.h"
 
 namespace Ui {
 class XProcessMemoryMapWidget;
@@ -78,6 +79,7 @@ public:
     ~XProcessMemoryMapWidget();
 
     void setData(qint64 nProcessId,bool bReload=true);
+    void setData(XInfoDB *pXInfoDB,bool bReload=true);
     void reload();
 
 private:
@@ -97,6 +99,7 @@ protected slots:
 private:
     Ui::XProcessMemoryMapWidget *ui;
     qint64 g_nProcessId;
+    XInfoDB *g_pXInfoDB;
     QStandardItemModel *g_pModel;
     QStandardItemModel *g_pOldModel;
     QShortcut *shortCuts[__SC_SIZE];
