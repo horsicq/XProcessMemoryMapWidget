@@ -178,17 +178,17 @@ void XProcessMemoryMapWidget::reload()
         #endif
         #ifdef Q_OS_LINUX
             QStandardItem *pItemOffset=new QStandardItem;
-            pItemOffset->setText(XBinary::valueToHex(modeAddress,listRegions.at(i).nOffset));
+            pItemOffset->setText(XBinary::valueToHex(modeAddress,listMemoryRegions.at(i).nOffset));
             pItemOffset->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_OFFSET,pItemOffset);
 
             QStandardItem *pItemDevice=new QStandardItem;
-            pItemDevice->setText(listRegions.at(i).sDevice);
+            pItemDevice->setText(listMemoryRegions.at(i).sDevice);
             pItemDevice->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_DEVICE,pItemDevice);
 
             QStandardItem *pItemFile=new QStandardItem;
-            pItemFile->setText(QString::number(listRegions.at(i).nFile));
+            pItemFile->setText(QString::number(listMemoryRegions.at(i).nFile));
             pItemFile->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_FILE,pItemFile);
         #endif
