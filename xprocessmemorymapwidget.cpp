@@ -94,15 +94,21 @@ void XProcessMemoryMapWidget::reload()
     QList<XProcess::MEMORY_REGION> listMemoryRegions;
     QList<XProcess::MODULE> listModules;
 
+    QList<XProcess::MODULE> *pListModules=nullptr;
+    QList<XProcess::MEMORY_REGION> *pListMemoryRegions=nullptr;
+
     if(g_nProcessId)
     {
         listMemoryRegions=XProcess::getMemoryRegionsList(g_nProcessId,0,nMemorySize);
         listModules=XProcess::getModulesList(g_nProcessId);
+
+        pListModules=&listModules;
+        pListMemoryRegions=&listMemoryRegions;
     }
     else if(g_pXInfoDB)
     {
-        listMemoryRegions=*(g_pXInfoDB->getCurrentMemoryRegionsList());
-        listModules=*(g_pXInfoDB->getCurrentModulesList());
+        pListMemoryRegions=g_pXInfoDB->getCurrentMemoryRegionsList();
+        pListModules=g_pXInfoDB->getCurrentModulesList();
     }
 
     if(g_nProcessId||g_pXInfoDB)
@@ -111,7 +117,7 @@ void XProcessMemoryMapWidget::reload()
 
         XBinary::MODE modeAddress=XBinary::getWidthModeFromSize(nMemorySize);
 
-        qint32 nNumberOfRecords=listMemoryRegions.count();
+        qint32 nNumberOfRecords=pListMemoryRegions->count();
 
         g_pModel=new QStandardItemModel(nNumberOfRecords,__HEADER_COLUMN_size);
 
@@ -139,61 +145,61 @@ void XProcessMemoryMapWidget::reload()
         for(int i=0;i<nNumberOfRecords;i++)
         {
             QStandardItem *pItemAddress=new QStandardItem;
-            pItemAddress->setText(XBinary::valueToHex(modeAddress,listMemoryRegions.at(i).nAddress));
-            pItemAddress->setData(listMemoryRegions.at(i).nAddress,Qt::UserRole+USERROLE_ADDRESS);
-            pItemAddress->setData(listMemoryRegions.at(i).nSize,Qt::UserRole+USERROLE_SIZE);
+            pItemAddress->setText(XBinary::valueToHex(modeAddress,pListMemoryRegions->at(i).nAddress));
+            pItemAddress->setData(pListMemoryRegions->at(i).nAddress,Qt::UserRole+USERROLE_ADDRESS);
+            pItemAddress->setData(pListMemoryRegions->at(i).nSize,Qt::UserRole+USERROLE_SIZE);
             pItemAddress->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_ADDRESS,pItemAddress);
 
             QStandardItem *pItemSize=new QStandardItem;
 //            pTypeSize->setText(XBinary::valueToHex(XBinary::MODE_32,modeAddress,listRegions.at(i).nSize));
-            pItemSize->setText(XBinary::valueToHex(XBinary::MODE_32,listMemoryRegions.at(i).nSize));
+            pItemSize->setText(XBinary::valueToHex(XBinary::MODE_32,pListMemoryRegions->at(i).nSize));
             pItemSize->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_SIZE,pItemSize);
 
             QStandardItem *pItemFlags=new QStandardItem;
-            pItemFlags->setText(XProcess::memoryFlagsToString(listMemoryRegions.at(i).mf));
+            pItemFlags->setText(XProcess::memoryFlagsToString(pListMemoryRegions->at(i).mf));
             pItemFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_FLAGS,pItemFlags);
         #ifdef Q_OS_WINDOWS
             QStandardItem *pItemAllocationBase=new QStandardItem;
-            pItemAllocationBase->setText(XBinary::valueToHex(modeAddress,listMemoryRegions.at(i).nAllocationBase));
+            pItemAllocationBase->setText(XBinary::valueToHex(modeAddress,pListMemoryRegions->at(i).nAllocationBase));
             pItemAllocationBase->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_ALLOCATIONBASE,pItemAllocationBase);
 
             QStandardItem *pItemAllocationFlags=new QStandardItem;
-            pItemAllocationFlags->setText(XProcess::memoryFlagsToString(listMemoryRegions.at(i).mfAllocation));
+            pItemAllocationFlags->setText(XProcess::memoryFlagsToString(pListMemoryRegions->at(i).mfAllocation));
             pItemAllocationFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_ALLOCATIONFLAGS,pItemAllocationFlags);
 
             QStandardItem *pItemState=new QStandardItem;
-            pItemState->setText(XBinary::valueToHex(XBinary::MODE_32,listMemoryRegions.at(i).nState));
+            pItemState->setText(XBinary::valueToHex(XBinary::MODE_32,pListMemoryRegions->at(i).nState));
             pItemState->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_STATE,pItemState);
 
             QStandardItem *pItemType=new QStandardItem;
-            pItemType->setText(XBinary::valueToHex(XBinary::MODE_32,listMemoryRegions.at(i).nType));
+            pItemType->setText(XBinary::valueToHex(XBinary::MODE_32,pListMemoryRegions->at(i).nType));
             pItemType->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_TYPE,pItemType);
         #endif
         #ifdef Q_OS_LINUX
             QStandardItem *pItemOffset=new QStandardItem;
-            pItemOffset->setText(XBinary::valueToHex(modeAddress,listMemoryRegions.at(i).nOffset));
+            pItemOffset->setText(XBinary::valueToHex(modeAddress,pListMemoryRegions->at(i).nOffset));
             pItemOffset->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_OFFSET,pItemOffset);
 
             QStandardItem *pItemDevice=new QStandardItem;
-            pItemDevice->setText(listMemoryRegions.at(i).sDevice);
+            pItemDevice->setText(pListMemoryRegions->at(i).sDevice);
             pItemDevice->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_DEVICE,pItemDevice);
 
             QStandardItem *pItemFile=new QStandardItem;
-            pItemFile->setText(QString::number(listMemoryRegions.at(i).nFile));
+            pItemFile->setText(QString::number(pListMemoryRegions->at(i).nFile));
             pItemFile->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_FILE,pItemFile);
         #endif
 
-            XProcess::MODULE module=XProcess::getModuleByAddress(listMemoryRegions.at(i).nAddress,&listModules);
+            XProcess::MODULE module=XProcess::getModuleByAddress(pListMemoryRegions->at(i).nAddress,pListModules);
 
             if((module.nSize)&&(module.sFileName!=""))
             {
@@ -203,7 +209,7 @@ void XProcessMemoryMapWidget::reload()
                     memoryMap=XFormats::getMemoryMap(module.sFileName,0,module.nAddress);
                 }
 
-                XBinary::_MEMORY_RECORD memoryRecord=XBinary::getMemoryRecordByAddress(&memoryMap,listMemoryRegions.at(i).nAddress);
+                XBinary::_MEMORY_RECORD memoryRecord=XBinary::getMemoryRecordByAddress(&memoryMap,pListMemoryRegions->at(i).nAddress);
 
                 QStandardItem *pItemModule=new QStandardItem;
                 pItemModule->setText(module.sName);
