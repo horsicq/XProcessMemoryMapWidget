@@ -79,7 +79,7 @@ public:
     ~XProcessMemoryMapWidget();
 
     void setData(qint64 nProcessId,bool bReload=true);
-    void setData(XInfoDB *pXInfoDB,bool bReload=true);
+    void setXInfoDB(XInfoDB *pXInfoDB,bool bReload=true);
     void reload();
 
 private:

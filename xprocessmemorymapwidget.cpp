@@ -52,7 +52,7 @@ void XProcessMemoryMapWidget::setData(qint64 nProcessId,bool bReload)
     }
 }
 
-void XProcessMemoryMapWidget::setData(XInfoDB *pXInfoDB,bool bReload)
+void XProcessMemoryMapWidget::setXInfoDB(XInfoDB *pXInfoDB,bool bReload)
 {
     g_pXInfoDB=pXInfoDB;
 
