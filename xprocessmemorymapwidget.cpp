@@ -226,6 +226,15 @@ void XProcessMemoryMapWidget::reload()
                 pItemFileName->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
                 g_pModel->setItem(i,HEADER_COLUMN_FILENAME,pItemFileName);
             }
+            else
+            {
+            #ifdef Q_OS_LINUX
+                QStandardItem *pItemModule=new QStandardItem;
+                pItemModule->setText(pListMemoryRegions->at(i).sFileName);
+                pItemModule->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+                g_pModel->setItem(i,HEADER_COLUMN_MODULE,pItemModule);
+            #endif
+            }
         }
 
         ui->tableViewMemoryMap->setModel(g_pModel);
