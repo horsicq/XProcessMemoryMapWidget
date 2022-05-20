@@ -265,7 +265,7 @@ void XProcessMemoryMapWidget::registerShortcuts(bool bState)
 {
     if(bState)
     {
-        if(!shortCuts[SC_DUMPTOFILE])               shortCuts[SC_DUMPTOFILE]                =new QShortcut(getShortcuts()->getShortcut(XShortcuts::ID_MEMORYMAP_DUMPTOFILE),            this,SLOT(_dumpToFileSlot()));
+        if(!shortCuts[SC_DUMPTOFILE])               shortCuts[SC_DUMPTOFILE]                =new QShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_DUMPTOFILE),            this,SLOT(_dumpToFileSlot()));
     }
     else
     {
@@ -298,7 +298,7 @@ void XProcessMemoryMapWidget::on_tableViewMemoryMap_customContextMenuRequested(c
     QMenu contextMenu(this);
 
     QAction actionDumpToFile(tr("Dump to file"),this);
-    actionDumpToFile.setShortcut(getShortcuts()->getShortcut(XShortcuts::ID_MEMORYMAP_DUMPTOFILE));
+    actionDumpToFile.setShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_DUMPTOFILE));
     connect(&actionDumpToFile,SIGNAL(triggered()),this,SLOT(_dumpToFileSlot()));
 
     contextMenu.addAction(&actionDumpToFile);
