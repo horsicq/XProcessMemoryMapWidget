@@ -225,6 +225,8 @@ void XProcessMemoryMapWidget::reload()
                 pItemFileName->setText(module.sFileName);
                 pItemFileName->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
                 g_pModel->setItem(i,HEADER_COLUMN_FILENAME,pItemFileName);
+
+                g_pModel->item(i,HEADER_COLUMN_ADDRESS)->setData(module.sFileName,Qt::UserRole+USERROLE_FILENAME);
             }
             else
             {
@@ -265,7 +267,8 @@ void XProcessMemoryMapWidget::registerShortcuts(bool bState)
 {
     if(bState)
     {
-        if(!shortCuts[SC_DUMPTOFILE])               shortCuts[SC_DUMPTOFILE]                =new QShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_DUMPTOFILE),            this,SLOT(_dumpToFileSlot()));
+        if(!shortCuts[SC_DUMPTOFILE])               shortCuts[SC_DUMPTOFILE]                =new QShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_DUMPTOFILE),          this,SLOT(_dumpToFileSlot()));
+        if(!shortCuts[SC_SHOWIN_FOLDER])            shortCuts[SC_SHOWIN_FOLDER]             =new QShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_SHOWIN_FOLDER),       this,SLOT(_showInFolderSlot()));
     }
     else
     {
@@ -295,15 +298,24 @@ void XProcessMemoryMapWidget::on_pushButtonReload_clicked()
 
 void XProcessMemoryMapWidget::on_tableViewMemoryMap_customContextMenuRequested(const QPoint &pos)
 {
-    QMenu contextMenu(this);
+    QMenu menuContext(this);
+
+    QMenu menuShowIn(tr("Show in"),this); // TODO Show only if not empty
 
     QAction actionDumpToFile(tr("Dump to file"),this);
     actionDumpToFile.setShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_DUMPTOFILE));
     connect(&actionDumpToFile,SIGNAL(triggered()),this,SLOT(_dumpToFileSlot()));
 
-    contextMenu.addAction(&actionDumpToFile);
+    QAction actionShowInFolder(tr("Folder"),this);
+    actionShowInFolder.setShortcut(getShortcuts()->getShortcut(X_ID_MODULES_SHOWIN_FOLDER));
+    connect(&actionShowInFolder,SIGNAL(triggered()),this,SLOT(_showInFolderSlot()));
 
-    contextMenu.exec(ui->tableViewMemoryMap->viewport()->mapToGlobal(pos));
+    menuContext.addAction(&actionDumpToFile);
+
+    menuShowIn.addAction(&actionShowInFolder);
+    menuContext.addMenu(&menuShowIn);
+
+    menuContext.exec(ui->tableViewMemoryMap->viewport()->mapToGlobal(pos));
 }
 
 void XProcessMemoryMapWidget::_dumpToFileSlot()
@@ -333,5 +345,19 @@ void XProcessMemoryMapWidget::_dumpToFileSlot()
                 pd.close();
             }
         }
+    }
+}
+
+void XProcessMemoryMapWidget::_showInFolderSlot()
+{
+    qint32 nRow=ui->tableViewMemoryMap->currentIndex().row();
+
+    if((nRow!=-1)&&(g_pModel))
+    {
+        QModelIndex index=ui->tableViewMemoryMap->selectionModel()->selectedIndexes().at(0);
+
+        QString sFilePath=ui->tableViewMemoryMap->model()->data(index,Qt::UserRole+USERROLE_FILENAME).toString();
+
+        XOptions::showInFolder(sFilePath);
     }
 }
