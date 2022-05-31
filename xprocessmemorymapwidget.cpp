@@ -199,7 +199,9 @@ void XProcessMemoryMapWidget::reload()
             g_pModel->setItem(i,HEADER_COLUMN_FILE,pItemFile);
         #endif
 
-            XProcess::MODULE module=XProcess::getModuleByAddress(pListModules,pListMemoryRegions->at(i).nAddress);
+            XADDR nCurrentAddress=pListMemoryRegions->at(i).nAddress;
+
+            XProcess::MODULE module=XProcess::getModuleByAddress(pListModules,nCurrentAddress);
 
             if((module.nSize)&&(module.sFileName!=""))
             {
