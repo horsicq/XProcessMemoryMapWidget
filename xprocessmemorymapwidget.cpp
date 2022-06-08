@@ -34,7 +34,7 @@ XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *pParent) :
     g_pOldModel=nullptr;
     g_pModel=nullptr;
 
-    memset(shortCuts,0,sizeof shortCuts);
+    memset(g_shortCuts,0,sizeof g_shortCuts);
 }
 
 XProcessMemoryMapWidget::~XProcessMemoryMapWidget()
@@ -269,17 +269,17 @@ void XProcessMemoryMapWidget::registerShortcuts(bool bState)
 {
     if(bState)
     {
-        if(!shortCuts[SC_DUMPTOFILE])               shortCuts[SC_DUMPTOFILE]                =new QShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_DUMPTOFILE),          this,SLOT(_dumpToFileSlot()));
-        if(!shortCuts[SC_SHOWIN_FOLDER])            shortCuts[SC_SHOWIN_FOLDER]             =new QShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_SHOWIN_FOLDER),       this,SLOT(_showInFolderSlot()));
+        if(!g_shortCuts[SC_DUMPTOFILE])               g_shortCuts[SC_DUMPTOFILE]                =new QShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_DUMPTOFILE),          this,SLOT(_dumpToFileSlot()));
+        if(!g_shortCuts[SC_SHOWIN_FOLDER])            g_shortCuts[SC_SHOWIN_FOLDER]             =new QShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_SHOWIN_FOLDER),       this,SLOT(_showInFolderSlot()));
     }
     else
     {
         for(qint32 i=0;i<__SC_SIZE;i++)
         {
-            if(shortCuts[i])
+            if(g_shortCuts[i])
             {
-                delete shortCuts[i];
-                shortCuts[i]=nullptr;
+                delete g_shortCuts[i];
+                g_shortCuts[i]=nullptr;
             }
         }
     }

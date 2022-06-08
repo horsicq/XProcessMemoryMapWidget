@@ -105,7 +105,7 @@ private:
     XInfoDB *g_pXInfoDB;
     QStandardItemModel *g_pModel;
     QStandardItemModel *g_pOldModel;
-    QShortcut *shortCuts[__SC_SIZE];
+    QShortcut *g_shortCuts[__SC_SIZE];
 };
 
 #endif // XPROCESSMEMORYMAPWIDGET_H
