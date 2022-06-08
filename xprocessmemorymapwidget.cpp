@@ -79,8 +79,7 @@ void XProcessMemoryMapWidget::reload()
     {
         nMemorySize=0x7FFFFFFF;
     }
-#endif
-#ifdef Q_OS_LINUX
+#else
     if(sizeof(void *)==8)
     {
         nMemorySize=0xFFFFFFFFFFFFFFFF;
@@ -99,7 +98,7 @@ void XProcessMemoryMapWidget::reload()
 
     if(g_nProcessId)
     {
-        listMemoryRegions=XProcess::getMemoryRegionsList(g_nProcessId,0,nMemorySize);
+        listMemoryRegions=XProcess::getMemoryRegionsListById(g_nProcessId,0,nMemorySize);
         listModules=XProcess::getModulesList(g_nProcessId);
 
         pListModules=&listModules;
