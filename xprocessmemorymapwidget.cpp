@@ -242,25 +242,11 @@ void XProcessMemoryMapWidget::reload()
 
         ui->tableViewMemoryMap->setModel(g_pModel);
 
-        #if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
-            QFuture<void> future=QtConcurrent::run(&XProcessMemoryMapWidget::deleteOldModel,this);
-        #else
-            QFuture<void> future=QtConcurrent::run(this,&XProcessMemoryMapWidget::deleteOldModel);
-        #endif
+        deleteOldModel(&g_pOldModel);
 
         // TODO get all modules; compare names;
         // TODO
         // TODO save scrollbar position
-    }
-}
-
-void XProcessMemoryMapWidget::deleteOldModel()
-{
-    if(g_pOldModel)
-    {
-        delete g_pOldModel;
-
-        g_pOldModel=0;
     }
 }
 

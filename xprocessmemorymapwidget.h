@@ -84,9 +84,6 @@ public:
     void setXInfoDB(XInfoDB *pXInfoDB,bool bReload=true);
     void reload();
 
-private:
-    void deleteOldModel();
-
 protected:
     virtual void registerShortcuts(bool bState);
 
