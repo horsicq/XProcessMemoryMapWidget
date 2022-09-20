@@ -70,7 +70,7 @@ void XProcessMemoryMapWidget::reload()
 
     quint64 nMemorySize=0;
 
-#ifdef Q_OS_WINDOWS
+#ifdef Q_OS_WIN
     if(sizeof(void *)==8)
     {
         nMemorySize=0x7FFFFFFFFFFFFFFF;
@@ -123,7 +123,7 @@ void XProcessMemoryMapWidget::reload()
         g_pModel->setHeaderData(HEADER_COLUMN_ADDRESS,Qt::Horizontal,tr("Address"));
         g_pModel->setHeaderData(HEADER_COLUMN_SIZE,Qt::Horizontal,tr("Size"));
         g_pModel->setHeaderData(HEADER_COLUMN_FLAGS,Qt::Horizontal,tr("Flags"));
-    #ifdef Q_OS_WINDOWS
+    #ifdef Q_OS_WIN
         g_pModel->setHeaderData(HEADER_COLUMN_ALLOCATIONBASE,Qt::Horizontal,tr("Allocation base"));
         g_pModel->setHeaderData(HEADER_COLUMN_ALLOCATIONFLAGS,Qt::Horizontal,tr("Allocation flags"));
         g_pModel->setHeaderData(HEADER_COLUMN_STATE,Qt::Horizontal,tr("State"));
@@ -160,7 +160,7 @@ void XProcessMemoryMapWidget::reload()
             pItemFlags->setText(XProcess::memoryFlagsToString(pListMemoryRegions->at(i).mf));
             pItemFlags->setTextAlignment(Qt::AlignCenter|Qt::AlignVCenter);
             g_pModel->setItem(i,HEADER_COLUMN_FLAGS,pItemFlags);
-        #ifdef Q_OS_WINDOWS
+        #ifdef Q_OS_WIN
             QStandardItem *pItemAllocationBase=new QStandardItem;
             pItemAllocationBase->setText(XBinary::valueToHex(modeAddress,pListMemoryRegions->at(i).nAllocationBase));
             pItemAllocationBase->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);

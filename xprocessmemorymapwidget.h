@@ -45,7 +45,7 @@ class XProcessMemoryMapWidget : public XShortcutsWidget
         HEADER_COLUMN_ADDRESS=0,
         HEADER_COLUMN_SIZE,
         HEADER_COLUMN_FLAGS,
-    #ifdef Q_OS_WINDOWS
+    #ifdef Q_OS_WIN
         HEADER_COLUMN_ALLOCATIONBASE,
         HEADER_COLUMN_ALLOCATIONFLAGS,
         HEADER_COLUMN_STATE,
