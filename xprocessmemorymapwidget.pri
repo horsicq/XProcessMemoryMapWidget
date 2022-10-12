@@ -3,10 +3,6 @@ QT       += concurrent
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
-FORMS += \
-    $$PWD/dialogxprocessmemorymap.ui \
-    $$PWD/xprocessmemorymapwidget.ui
-
 HEADERS += \
     $$PWD/dialogxprocessmemorymap.h \
     $$PWD/xprocessmemorymapwidget.h
@@ -14,6 +10,10 @@ HEADERS += \
 SOURCES += \
     $$PWD/dialogxprocessmemorymap.cpp \
     $$PWD/xprocessmemorymapwidget.cpp
+
+FORMS += \
+    $$PWD/dialogxprocessmemorymap.ui \
+    $$PWD/xprocessmemorymapwidget.ui
 
 !contains(XCONFIG, xprocess) {
     XCONFIG += xprocess
