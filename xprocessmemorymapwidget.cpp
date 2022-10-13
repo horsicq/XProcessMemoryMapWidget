@@ -141,7 +141,7 @@ void XProcessMemoryMapWidget::reload()
         quint64 nCurrentBase=-1;
         XBinary::_MEMORY_MAP memoryMap={};
 
-        for(int i=0;i<nNumberOfRecords;i++)
+        for(qint32 i=0;i<nNumberOfRecords;i++)
         {
             QStandardItem *pItemAddress=new QStandardItem;
             pItemAddress->setText(XBinary::valueToHex(modeAddress,pListMemoryRegions->at(i).nAddress));
