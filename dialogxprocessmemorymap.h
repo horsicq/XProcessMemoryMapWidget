@@ -27,12 +27,11 @@ namespace Ui {
 class DialogXProcessMemoryMap;
 }
 
-class DialogXProcessMemoryMap : public QDialog
-{
+class DialogXProcessMemoryMap : public QDialog {
     Q_OBJECT
 
 public:
-    explicit DialogXProcessMemoryMap(QWidget *pParent=nullptr);
+    explicit DialogXProcessMemoryMap(QWidget *pParent = nullptr);
     ~DialogXProcessMemoryMap();
 
     void setData(qint64 nProcessId);
@@ -44,4 +43,4 @@ private:
     Ui::DialogXProcessMemoryMap *ui;
 };
 
-#endif // DIALOGXPROCESSMEMORYMAP_H
+#endif  // DIALOGXPROCESSMEMORYMAP_H
