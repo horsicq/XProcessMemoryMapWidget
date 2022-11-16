@@ -22,7 +22,8 @@
 
 #include "ui_xprocessmemorymapwidget.h"
 
-XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *pParent) : XShortcutsWidget(pParent), ui(new Ui::XProcessMemoryMapWidget) {
+XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *pParent) : XShortcutsWidget(pParent), ui(new Ui::XProcessMemoryMapWidget)
+{
     ui->setupUi(this);
 
     // mb TODO autorefresh
@@ -35,11 +36,13 @@ XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *pParent) : XShortcutsW
     memset(g_shortCuts, 0, sizeof g_shortCuts);
 }
 
-XProcessMemoryMapWidget::~XProcessMemoryMapWidget() {
+XProcessMemoryMapWidget::~XProcessMemoryMapWidget()
+{
     delete ui;
 }
 
-void XProcessMemoryMapWidget::setData(qint64 nProcessId, bool bReload) {
+void XProcessMemoryMapWidget::setData(qint64 nProcessId, bool bReload)
+{
     g_nProcessId = nProcessId;
 
     if (bReload) {
@@ -47,7 +50,8 @@ void XProcessMemoryMapWidget::setData(qint64 nProcessId, bool bReload) {
     }
 }
 
-void XProcessMemoryMapWidget::setXInfoDB(XInfoDB *pXInfoDB, bool bReload) {
+void XProcessMemoryMapWidget::setXInfoDB(XInfoDB *pXInfoDB, bool bReload)
+{
     g_pXInfoDB = pXInfoDB;
 
     if (bReload) {
@@ -55,7 +59,8 @@ void XProcessMemoryMapWidget::setXInfoDB(XInfoDB *pXInfoDB, bool bReload) {
     }
 }
 
-void XProcessMemoryMapWidget::reload() {
+void XProcessMemoryMapWidget::reload()
+{
 #ifdef QT_DEBUG
     qDebug("void XProcessMemoryMapWidget::reload()");
 #endif
@@ -227,7 +232,8 @@ void XProcessMemoryMapWidget::reload() {
     }
 }
 
-void XProcessMemoryMapWidget::registerShortcuts(bool bState) {
+void XProcessMemoryMapWidget::registerShortcuts(bool bState)
+{
     if (bState) {
         if (!g_shortCuts[SC_DUMPTOFILE]) g_shortCuts[SC_DUMPTOFILE] = new QShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_DUMPTOFILE), this, SLOT(_dumpToFileSlot()));
         if (!g_shortCuts[SC_SHOWIN_FOLDER])
@@ -242,17 +248,20 @@ void XProcessMemoryMapWidget::registerShortcuts(bool bState) {
     }
 }
 
-void XProcessMemoryMapWidget::on_pushButtonSave_clicked() {
+void XProcessMemoryMapWidget::on_pushButtonSave_clicked()
+{
     if (g_pModel) {
         XShortcutsWidget::saveModel(g_pModel, QString("%1.txt").arg(tr("Memory map")));
     }
 }
 
-void XProcessMemoryMapWidget::on_pushButtonReload_clicked() {
+void XProcessMemoryMapWidget::on_pushButtonReload_clicked()
+{
     reload();
 }
 
-void XProcessMemoryMapWidget::on_tableViewMemoryMap_customContextMenuRequested(const QPoint &pos) {
+void XProcessMemoryMapWidget::on_tableViewMemoryMap_customContextMenuRequested(const QPoint &pos)
+{
     QMenu menuContext(this);
 
     QMenu menuShowIn(tr("Show in"), this);  // TODO Show only if not empty
@@ -273,7 +282,8 @@ void XProcessMemoryMapWidget::on_tableViewMemoryMap_customContextMenuRequested(c
     menuContext.exec(ui->tableViewMemoryMap->viewport()->mapToGlobal(pos));
 }
 
-void XProcessMemoryMapWidget::_dumpToFileSlot() {
+void XProcessMemoryMapWidget::_dumpToFileSlot()
+{
     QString sSaveFileName = QString("%1.bin").arg(tr("Dump"));
     QString sFileName = QFileDialog::getSaveFileName(this, tr("Save dump"), sSaveFileName, QString("%1 (*.bin)").arg(tr("Raw data")));
 
@@ -299,7 +309,8 @@ void XProcessMemoryMapWidget::_dumpToFileSlot() {
     }
 }
 
-void XProcessMemoryMapWidget::_showInFolderSlot() {
+void XProcessMemoryMapWidget::_showInFolderSlot()
+{
     qint32 nRow = ui->tableViewMemoryMap->currentIndex().row();
 
     if ((nRow != -1) && (g_pModel)) {
