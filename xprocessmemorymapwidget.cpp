@@ -22,7 +22,8 @@
 
 #include "ui_xprocessmemorymapwidget.h"
 
-XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *pParent) : XShortcutsWidget(pParent), ui(new Ui::XProcessMemoryMapWidget)
+XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *pParent)
+    : XShortcutsWidget(pParent), ui(new Ui::XProcessMemoryMapWidget)
 {
     ui->setupUi(this);
 
