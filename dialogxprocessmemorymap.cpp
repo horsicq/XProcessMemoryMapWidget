@@ -22,8 +22,7 @@
 
 #include "ui_dialogxprocessmemorymap.h"
 
-DialogXProcessMemoryMap::DialogXProcessMemoryMap(QWidget *pParent)
-    : QDialog(pParent), ui(new Ui::DialogXProcessMemoryMap)
+DialogXProcessMemoryMap::DialogXProcessMemoryMap(QWidget *pParent) : QDialog(pParent), ui(new Ui::DialogXProcessMemoryMap)
 {
     ui->setupUi(this);
 }

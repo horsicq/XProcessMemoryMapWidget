@@ -22,8 +22,7 @@
 
 #include "ui_xprocessmemorymapwidget.h"
 
-XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *pParent)
-    : XShortcutsWidget(pParent), ui(new Ui::XProcessMemoryMapWidget)
+XProcessMemoryMapWidget::XProcessMemoryMapWidget(QWidget *pParent) : XShortcutsWidget(pParent), ui(new Ui::XProcessMemoryMapWidget)
 {
     ui->setupUi(this);
 
@@ -237,8 +236,7 @@ void XProcessMemoryMapWidget::registerShortcuts(bool bState)
 {
     if (bState) {
         if (!g_shortCuts[SC_DUMPTOFILE]) g_shortCuts[SC_DUMPTOFILE] = new QShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_DUMPTOFILE), this, SLOT(_dumpToFileSlot()));
-        if (!g_shortCuts[SC_SHOWIN_FOLDER])
-            g_shortCuts[SC_SHOWIN_FOLDER] = new QShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_SHOWIN_FOLDER), this, SLOT(_showInFolderSlot()));
+        if (!g_shortCuts[SC_SHOWIN_FOLDER]) g_shortCuts[SC_SHOWIN_FOLDER] = new QShortcut(getShortcuts()->getShortcut(X_ID_MEMORYMAP_SHOWIN_FOLDER), this, SLOT(_showInFolderSlot()));
     } else {
         for (qint32 i = 0; i < __SC_SIZE; i++) {
             if (g_shortCuts[i]) {
