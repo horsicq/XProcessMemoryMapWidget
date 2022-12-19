@@ -252,7 +252,7 @@ void XProcessMemoryMapWidget::registerShortcuts(bool bState)
 void XProcessMemoryMapWidget::on_pushButtonSave_clicked()
 {
     if (g_pModel) {
-        XShortcutsWidget::saveModel(g_pModel, QString("%1.txt").arg(tr("Memory map")));
+        XShortcutsWidget::saveTableModel(g_pModel, QString("%1.txt").arg(tr("Memory map")));
     }
 }
 
