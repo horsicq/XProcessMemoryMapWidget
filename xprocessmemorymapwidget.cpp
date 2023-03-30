@@ -88,6 +88,7 @@ void XProcessMemoryMapWidget::reload()
     QList<XProcess::MEMORY_REGION> *pListMemoryRegions = nullptr;
 
     if (g_nProcessId) {
+        // TODO getCurrent...
         listMemoryRegions = XProcess::getMemoryRegionsList_Id(g_nProcessId, 0, nMemorySize);
         listModules = XProcess::getModulesList(g_nProcessId);
 
