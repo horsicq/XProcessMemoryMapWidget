@@ -67,6 +67,7 @@ void XProcessMemoryMapWidget::reload()
 
     quint64 nMemorySize = 0;
 
+    // mb TODO a function
 #ifdef Q_OS_WIN
     if (sizeof(void *) == 8) {
         nMemorySize = 0x7FFFFFFFFFFFFFFF;
