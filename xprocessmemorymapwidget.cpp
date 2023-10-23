@@ -193,10 +193,12 @@ void XProcessMemoryMapWidget::reload()
             if ((module.nSize) && (module.sFileName != "")) {
                 if (nCurrentBase != module.nAddress) {
                     nCurrentBase = module.nAddress;
-                    memoryMap = XFormats::getMemoryMap(module.sFileName, 0, module.nAddress);
+                    memoryMap = XFormats::getMemoryMap(module.sFileName, false, module.nAddress);
                 }
 
-                XBinary::_MEMORY_RECORD memoryRecord = XBinary::getMemoryRecordByAddress(&memoryMap, pListMemoryRegions->at(i).nAddress);
+                XADDR nModuleAddress = pListMemoryRegions->at(i).nAddress;
+
+                XBinary::_MEMORY_RECORD memoryRecord = XBinary::getMemoryRecordByAddress(&memoryMap, nModuleAddress);
 
                 QStandardItem *pItemModule = new QStandardItem;
                 pItemModule->setText(module.sName);
