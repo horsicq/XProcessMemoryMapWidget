@@ -193,7 +193,7 @@ void XProcessMemoryMapWidget::reload()
             if ((module.nSize) && (module.sFileName != "")) {
                 if (nCurrentBase != module.nAddress) {
                     nCurrentBase = module.nAddress;
-                    memoryMap = XFormats::getMemoryMap(module.sFileName, false, module.nAddress);
+                    memoryMap = XFormats::getMemoryMap(module.sFileName, XBinary::MAPMODE_UNKNOWN, false, module.nAddress);
                 }
 
                 XADDR nModuleAddress = pListMemoryRegions->at(i).nAddress;
