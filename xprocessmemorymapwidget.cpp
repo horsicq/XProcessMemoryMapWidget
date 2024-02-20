@@ -304,9 +304,10 @@ void XProcessMemoryMapWidget::_dumpToFileSlot()
             XProcess pd(g_nProcessId, nAddress, nSize);
 
             if (pd.open(QIODevice::ReadOnly)) {
-                DialogDumpProcess dd(this, &pd, 0, nSize, sFileName, DumpProcess::DT_OFFSET);
+                DialogDumpProcess dd(this);
+                dd.setData(&pd, 0, nSize, sFileName, DumpProcess::DT_DUMP_OFFSET);
 
-                dd.exec();
+                dd.showDialogDelay();
 
                 pd.close();
             }
