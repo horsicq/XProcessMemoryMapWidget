@@ -1,8 +1,12 @@
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 
-include(${CMAKE_CURRENT_LIST_DIR}/../XProcess/xprocess.cmake)
+if (NOT DEFINED XPROCESS_SOURCES)
+    include(${CMAKE_CURRENT_LIST_DIR}/../XProcess/xprocess.cmake)
+    set(XPROCESSMEMORYMAPWIDGET_SOURCES ${XPROCESSMEMORYMAPWIDGET_SOURCES} ${XPROCESS_SOURCES})
+endif()
 
 set(XPROCESSMEMORYMAPWIDGET_SOURCES
+    ${XPROCESSMEMORYMAPWIDGET_SOURCES}
     ${XPROCESS_SOURCES}
     ${CMAKE_CURRENT_LIST_DIR}/dialogxprocessmemorymap.cpp
     ${CMAKE_CURRENT_LIST_DIR}/dialogxprocessmemorymap.h
