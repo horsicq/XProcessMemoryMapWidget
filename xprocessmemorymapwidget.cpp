@@ -228,7 +228,7 @@ void XProcessMemoryMapWidget::reload()
 
         ui->tableViewMemoryMap->setModel(g_pModel);
 
-        deleteOldStandardModel(&g_pOldModel);
+        // _deleteOldStandardModel(&g_pOldModel);
 
         // TODO get all modules; compare names;
         // TODO
