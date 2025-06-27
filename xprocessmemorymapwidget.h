@@ -31,6 +31,8 @@
 #include "xinfodb.h"
 #include "xprocess.h"
 #include "xshortcutswidget.h"
+#include "dumpprocess.h"
+#include "xdialogprocess.h"
 
 namespace Ui {
 class XProcessMemoryMapWidget;
