@@ -27,7 +27,6 @@
 #include <QWidget>
 #include <QtConcurrent>
 
-#include "dialogdumpprocess.h"
 #include "xformats.h"
 #include "xinfodb.h"
 #include "xprocess.h"
